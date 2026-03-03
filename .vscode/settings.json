@@ -1,0 +1,12 @@
+{
+    "cSpell.words": [
+        "cbar",
+        "cmap",
+        "linecolor",
+        "pyrefly",
+        "reactangle"
+    ],
+    "python.analysis.extraPaths": [
+        "./lattice"
+    ]
+}
