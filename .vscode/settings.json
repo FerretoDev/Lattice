@@ -4,7 +4,9 @@
         "cmap",
         "linecolor",
         "pyrefly",
-        "reactangle"
+        "reactangle",
+        "xticklabels",
+        "yticklabels"
     ],
     "python.analysis.extraPaths": [
         "./lattice"
