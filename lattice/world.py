@@ -51,6 +51,6 @@ class World:
         y2: int,
         block: int,
     ):  # Fill a rectangular area with a specific block type
-        for y in range(min(y1, y2), max(y1, y2) + 1):
-            for x in range(min(x1, x2), max(x1, x2) + 1):
+        for y in range(min(y1, y2), max(y1, y2) + 1):  # row
+            for x in range(min(x1, x2), max(x1, x2) + 1):  # column
                 self.set_block(x, y, block)
