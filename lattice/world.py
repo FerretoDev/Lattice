@@ -23,6 +23,7 @@ class World:
         self.grid = np.zeros((height, width), dtype=int)
 
     def set_block(self, x: int, y: int, block: int):
+        # Client or for programmer, the coordinates are 1-based, but internally we use 0-based indexing for the grid
         x = int(x) - 1
         y = int(y) - 1
         if (
@@ -42,7 +43,13 @@ class World:
         return None
 
     def fill_reactangle(
-        self, x1: int, y1: int, x2: int, y2: int, block: int
+        # Server or for programmer, the coordinates are 1-based, but internally we use 0-based indexing for the grid
+        self,
+        x1: int,
+        y1: int,
+        x2: int,
+        y2: int,
+        block: int,
     ):  # Fill a rectangular area with a specific block type
         for y in range(min(y1, y2), max(y1, y2) + 1):
             for x in range(min(x1, x2), max(x1, x2) + 1):
