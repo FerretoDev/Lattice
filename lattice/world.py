@@ -1,4 +1,6 @@
+import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 
 """
 A simple 2D world representation using a grid. 
@@ -67,3 +69,33 @@ class World:
                 self.counter_blocks += (
                     1  # Increment the block counter for each block set
                 )
+
+    def draw(self, ax=None):
+        """Render the world grid using a heatmap with visible grid lines.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes, optional
+            Axes to draw on. If None, a new figure and axes are created.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            The axes with the rendered grid.
+        """
+        if ax is None:
+            _, ax = plt.subplots()
+
+        sns.heatmap(
+            self.grid,
+            cmap="binary",
+            cbar=False,
+            linewidths=1,
+            linecolor="gray",
+            square=True,
+            xticklabels=range(1, self.width + 1),  # type: ignore
+            yticklabels=range(1, self.height + 1),  # type: ignore
+            ax=ax,
+        )
+
+        return ax

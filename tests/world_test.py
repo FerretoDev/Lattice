@@ -1,11 +1,15 @@
 import os
 import sys
 
+import matplotlib
+import matplotlib.pyplot as plt
 import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from lattice.world import World
+
+matplotlib.use("Agg")  # Use non-interactive backend for tests
 
 """Test the World class"""
 
@@ -38,15 +42,19 @@ def test_fill_rectangle_exceeds_world_boundaries():
         world.fill_rectangle(1, 1, 101, 10, 1)  # x2=101 exceeds width=100
 
 
-world = World(10000, 10000)
-world.set_block(2, 3, 1)  # Setting block type 1 at (2, 3)
-# print(world.get_block(2, 3))  # Output: '1' (stone)
-
-# world.fill_rectangle(
-#    1, 1, 4, 4, 1
-# )  # Fill a rectangle from (0, 0) to (4, 4) with block type 1
-# print(world.get_block(1, 1))  # Output: '1' (stone)
-# print(world.get_block(5, 5))  # Output: '0' (air)
+def test_draw_returns_axes():
+    world: World = World(5, 5)
+    world.set_block(2, 3, 1)
+    ax = world.draw()
+    assert ax is not None
+    plt.close("all")
 
 
-print(world.counter_blocks)
+def test_draw_uses_provided_axes():
+    world: World = World(5, 5)
+    _, ax = plt.subplots()
+    result = world.draw(ax=ax)
+    assert result is ax
+    plt.close("all")
+
+
