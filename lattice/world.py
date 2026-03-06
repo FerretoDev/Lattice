@@ -11,9 +11,7 @@ Each cell in the grid can hold a block type, represented by an integer.
 # 1 is 'stone'
 class World:
 
-    # 'y' is the row index, and
-
-    # 'x' is the column index.
+    # 'y' is the row index, and 'x' is the column index.
 
     # Numpy arrays are indexed as [row: vertical, column: horizontal], which corresponds to [y, x] in our world representation.
 
@@ -21,6 +19,7 @@ class World:
         self.width = width
         self.height = height
         self.grid = np.zeros((height, width), dtype=int)
+        self.counter_blocks = 0
 
     def set_block(self, x: int, y: int, block: int):
         # Client or for programmer, the coordinates are 1-based, but internally we use 0-based indexing for the grid
@@ -42,7 +41,7 @@ class World:
             ]  # Use [y, x] to access the grid since it's indexed as [row, column] not [x, y] for numpy arrays
         return None
 
-    def fill_reactangle(
+    def fill_rectangle(
         # Server or for programmer, the coordinates are 1-based, but internally we use 0-based indexing for the grid
         self,
         x1: int,
@@ -51,6 +50,20 @@ class World:
         y2: int,
         block: int,
     ):  # Fill a rectangular area with a specific block type
-        for y in range(min(y1, y2), max(y1, y2) + 1):
-            for x in range(min(x1, x2), max(x1, x2) + 1):
+
+        # absolute value: abs() is a built-in function in Python that returns the absolute value of a number. The absolute value of a number is its distance from zero on the number line, regardless of direction. For example, abs(-5) would return 5, and abs(5) would also return 5.
+        fill_height = abs(y2 - y1) + 1  # Calculate the height of the rectangle
+        fill_width = abs(x2 - x1) + 1  # Calculate the width of the rectangle
+
+        if x1 < 1 or y1 < 1 or x2 > self.width or y2 > self.height:
+            raise ValueError("Rectangle exceeds world boundaries")
+
+        if fill_height * fill_width > 1000:
+            raise ValueError("Insert less than 1000 blocks")
+
+        for y in range(min(y1, y2), max(y1, y2) + 1):  # row
+            for x in range(min(x1, x2), max(x1, x2) + 1):  # column
                 self.set_block(x, y, block)
+                self.counter_blocks += (
+                    1  # Increment the block counter for each block set
+                )
