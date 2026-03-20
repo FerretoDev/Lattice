@@ -15,13 +15,13 @@ class World:
 
     # Numpy arrays are indexed as [row: vertical, column: horizontal], which corresponds to [y, x] in our world representation.
 
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int) -> None:
         self.width = width
         self.height = height
         self.grid = np.zeros((height, width), dtype=int)
         self.counter_blocks = 0
 
-    def set_block(self, x: int, y: int, block: int):
+    def set_block(self, x: int, y: int, block: int) -> None:
         # Client or for programmer, the coordinates are 1-based, but internally we use 0-based indexing for the grid
         x = int(x) - 1
         y = int(y) - 1
@@ -30,7 +30,7 @@ class World:
         ):  # Check if the coordinates are within bounds
             self.grid[y, x] = block
 
-    def get_block(self, x: int, y: int):
+    def get_block(self, x: int, y: int) -> int | None:
         x = int(x) - 1
         y = int(y) - 1
         if (
@@ -49,7 +49,7 @@ class World:
         x2: int,
         y2: int,
         block: int,
-    ):  # Fill a rectangular area with a specific block type
+    ) -> None:  # Fill a rectangular area with a specific block type
 
         # absolute value: abs() is a built-in function in Python that returns the absolute value of a number. The absolute value of a number is its distance from zero on the number line, regardless of direction. For example, abs(-5) would return 5, and abs(5) would also return 5.
         fill_height = abs(y2 - y1) + 1  # Calculate the height of the rectangle
