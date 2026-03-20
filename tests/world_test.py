@@ -10,7 +10,7 @@ from lattice.world import World
 """Test the World class"""
 
 
-def test_set_and_get_block():
+def test_set_and_get_block() -> None:
     world: World = World(10, 10)
     world.set_block(2, 3, 1)
     assert world.get_block(2, 3) == 1
