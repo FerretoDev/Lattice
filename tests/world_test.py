@@ -49,4 +49,4 @@ world.set_block(2, 3, 1)  # Setting block type 1 at (2, 3)
 # print(world.get_block(5, 5))  # Output: '0' (air)
 
 
-print(world.counter_blocks)
+print(world._counter_blocks(1, 5, 7, 8))
