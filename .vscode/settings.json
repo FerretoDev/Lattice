@@ -12,5 +12,6 @@
     ],
     "python.analysis.extraPaths": [
         "./lattice"
-    ]
+    ],
+    "cSpell.language": "en,es-ES"
 }
