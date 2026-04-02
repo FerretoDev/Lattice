@@ -22,10 +22,10 @@ class World:
 
     def _counter_blocks(
         self,
-        x1=int,
-        y1=int,
-        x2=int,
-        y2=int,
+        x1: int,
+        y1: int,
+        x2: int,
+        y2: int,
     ):
         counter_blocks: int = 0
         for y in range(min(y1, y2), max(y1, y2) + 1):  # row
@@ -40,7 +40,20 @@ class World:
         x2: int,
         y2: int,
         block: int,
-    ) -> None: ...
+    ) -> None:
+        x_start = min(x1, x2)
+        x_end = max(x1, x2)
+        y_start = min(y1, y2)
+        y_end = max(y1, y2)
+
+        if x_start < 1 or y_start < 1 or x_end > self.width or y_end > self.height:
+            raise ValueError("Rectangle exceeds world boundaries")
+
+        total = (x_end - x_start + 1) * (y_end - y_start + 1)
+        if total > self.MAX_BLOCKS:
+            raise ValueError("Insert less than 1000 blocks")
+
+        self._fill_direct(x_start, y_start, x_end, y_end, block)
 
     def _fill_direct(
         self,
@@ -49,7 +62,17 @@ class World:
         x2: int,
         y2: int,
         block: int,
-    ) -> None: ...
+    ) -> None:
+        x_start = min(x1, x2)
+        x_end = max(x1, x2)
+        y_start = min(y1, y2)
+        y_end = max(y1, y2)
+
+        if x_start < 1 or y_start < 1 or x_end > self.width or y_end > self.height:
+            raise ValueError("Rectangle exceeds world boundaries")
+
+        # Translate 1-based coordinates to 0-based slicing.
+        self.grid[y_start - 1 : y_end, x_start - 1 : x_end] = int(block)
 
     def set_block(self, x: int, y: int, block: int) -> None:
         # Client or for programmer, the coordinates are 1-based, but internally we use 0-based indexing for the grid
@@ -80,20 +103,18 @@ class World:
         y2: int,
         block: int,
     ) -> None:  # Fill a rectangular area with a specific block type
+        x_start = min(x1, x2)
+        x_end = max(x1, x2)
+        y_start = min(y1, y2)
+        y_end = max(y1, y2)
 
-        total = self._counter_blocks(x1, y1, x2, y2)
-
-        if total > self.MAX_BLOCKS:
-            self._fill_split(x1, y1, x2, y2, block)
-        else:
-            self._fill_direct(x1, y1, x2, y2, block)
-
-        # absolute value: abs() is a built-in function in Python that returns the absolute value of a number. The absolute value of a number is its distance from zero on the number line, regardless of direction. For example, abs(-5) would return 5, and abs(5) would also return 5.
-        fill_height = abs(y2 - y1) + 1  # Calculate the height of the rectangle
-        fill_width = abs(x2 - x1) + 1  # Calculate the width of the rectangle
-
-        if x1 < 1 or y1 < 1 or x2 > self.width or y2 > self.height:
+        if x_start < 1 or y_start < 1 or x_end > self.width or y_end > self.height:
             raise ValueError("Rectangle exceeds world boundaries")
 
-        if fill_height * fill_width > 100000:
-            raise ValueError("Insert less than 1000 blocks")
+        total = self._counter_blocks(x_start, y_start, x_end, y_end)
+
+        if total > self.MAX_BLOCKS:
+            self._fill_split(x_start, y_start, x_end, y_end, block)
+            return
+
+        self._fill_direct(x_start, y_start, x_end, y_end, block)
