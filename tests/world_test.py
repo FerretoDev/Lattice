@@ -102,3 +102,89 @@ def test_fill_rectangle_uses_split_for_exact_limit(
     world.fill_rectangle(0, 0, 24, 39, 5)
 
     assert called == [(0, 0, 24, 39, 5)]
+
+
+# ------------------------------------------------------------------
+# Chunk system
+# ------------------------------------------------------------------
+
+
+def test_all_chunks_loaded_by_default() -> None:
+    world = World(32, 32, chunk_size=16)
+    assert (0, 0) in world.loaded_chunks
+    assert (1, 0) in world.loaded_chunks
+    assert (0, 1) in world.loaded_chunks
+    assert (1, 1) in world.loaded_chunks
+
+
+def test_fill_raises_when_chunk_unloaded() -> None:
+    world = World(32, 32, chunk_size=16)
+    world.unload_chunk(1, 0)
+
+    with pytest.raises(ValueError, match="Chunk \\(1, 0\\) is not loaded"):
+        world.fill_rectangle(16, 0, 31, 15, 1)
+
+
+def test_force_load_allows_fill() -> None:
+    world = World(32, 32, chunk_size=16)
+    world.unload_chunk(1, 0)
+    world.force_load(1, 0)
+
+    world.fill_rectangle(16, 0, 31, 15, 1)
+
+    assert world.get_block(16, 0) == 1
+    assert world.get_block(31, 15) == 1
+
+
+def test_fill_raises_when_one_of_many_chunks_unloaded() -> None:
+    world = World(64, 16, chunk_size=16)
+    world.unload_chunk(2, 0)
+
+    with pytest.raises(ValueError, match="not loaded"):
+        world.fill_rectangle(0, 0, 63, 15, 1)
+
+
+def test_get_chunk_returns_correct_coords() -> None:
+    world = World(64, 64, chunk_size=16)
+    assert world._get_chunk(0, 0) == (0, 0)
+    assert world._get_chunk(15, 15) == (0, 0)
+    assert world._get_chunk(16, 0) == (1, 0)
+    assert world._get_chunk(0, 16) == (0, 1)
+    assert world._get_chunk(63, 63) == (3, 3)
+
+
+# ------------------------------------------------------------------
+# Boundary edge cases
+# ------------------------------------------------------------------
+
+
+def test_fill_single_cell() -> None:
+    world = World(10, 10)
+    world.fill_rectangle(5, 5, 5, 5, 1)
+    assert world.get_block(5, 5) == 1
+
+
+def test_fill_top_left_corner() -> None:
+    world = World(10, 10)
+    world.fill_rectangle(0, 0, 0, 0, 1)
+    assert world.get_block(0, 0) == 1
+
+
+def test_fill_bottom_right_corner() -> None:
+    world = World(10, 10)
+    world.fill_rectangle(9, 9, 9, 9, 1)
+    assert world.get_block(9, 9) == 1
+
+
+def test_fill_raises_at_exact_boundary() -> None:
+    world = World(10, 10)
+    with pytest.raises(ValueError, match="Rectangle exceeds world boundaries"):
+        world.fill_rectangle(0, 0, 10, 9, 1)  # x2 == width, out of bounds
+
+
+def test_get_block_returns_none_outside_bounds() -> None:
+    world = World(10, 10)
+    assert world.get_block(-1, 0) is None
+    assert world.get_block(0, -1) is None
+    assert world.get_block(10, 0) is None
+    assert world.get_block(0, 10) is None
