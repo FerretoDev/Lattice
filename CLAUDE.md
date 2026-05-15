@@ -259,6 +259,10 @@ Interactive visualization and eventually real-time rendering.
 
 # Technical Notes
 
+## Ignored Directories
+
+* `cosas/`: This folder is used exclusively for personal practice, temporary tests, and random experiments. It should be ignored in the context of the main project.
+
 ## Coordinate Convention
 
 World coordinates:
