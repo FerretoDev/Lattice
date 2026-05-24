@@ -31,3 +31,4 @@ Lattice is a simulation framework focused on discrete spatial worlds, constraine
 - [CLAUDE.md](CLAUDE.md)
 - [ROADMAP.md](ROADMAP.md)
 - [PLAN.md](PLAN.md)
+- [docs/architecture.md](docs/architecture.md)
