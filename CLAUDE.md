@@ -45,7 +45,7 @@ Purpose:
 - enable streaming and dynamic loading
 
 Current status:
-- planned / in progress
+- implemented in the 2D core; streaming remains planned
 
 ---
 
@@ -119,141 +119,181 @@ Computes inclusive rectangle area.
 
 # Project Roadmap
 
+See [ROADMAP.md](ROADMAP.md) for the dependency-ordered phases and [PLAN.md](PLAN.md) for the current 30-day plan.
+
 ---
 
-# Phase 1 — Stable 2D Core
+# Ecosystem Scope (Target)
+
+Lattice is evolving into a small engine stack:
+
+* lattice-core (Python): simulation and rules
+* lattice-visual (Python): 2D/3D viewers and tools
+* lattice-bridge (Python/Java): data exchange and control channel
+* lattice-engine-java (Java): Minecraft Java plugin integration (Paper/Spigot), not a mod
+
+---
+
+# Proposed Monorepo Layout
+
+```
+lattice/
+│
+├── core-python/
+│   ├── lattice/
+│   │   ├── world.py
+│   │   ├── chunks.py
+│   │   ├── blocks.py
+│   │   ├── rules.py
+│   │   ├── fill.py
+│   │   └── io.py
+│   ├── tests/
+│   ├── notebooks/
+│   └── pyproject.toml
+│
+├── visual-python/
+│   ├── renderer_2d.py
+│   ├── renderer_3d.py
+│   ├── camera.py
+│   └── app.py
+│
+├── bridge/
+│   ├── api_spec.json
+│   ├── serializer.py
+│   ├── server.py
+│   └── client_java.proto
+│
+├── java-minecraft/
+│   ├── src/main/java/
+│   └── build.gradle.kts
+│
+├── docs/
+│   ├── CLAUDE.md
+│   ├── architecture.md
+│   ├── roadmap.md
+│   └── math_model.md
+│
+└── README.md
+```
+
+---
+
+# Roadmap (Dependency Order)
+
+# Phase 1 — Stable 2D Core (Done)
 
 ## Goals
 
 * robust 2D world
 * constrained fills
 * chunk loading
-* visualization
+* visualization hooks
 * tests
 
-## Tasks
+## Status
 
-### World Core
-
-* [x] Create NumPy-based grid
-* [x] Implement block setting/getting (`set_block`, `get_block`)
-* [x] Implement rectangle fill (`fill_rectangle`)
-* [x] Add fill limits (`MAX_BLOCKS = 1000`)
-* [x] Add recursive fill splitting (`_fill_split` — splits along longest axis)
-* [x] Add direct fill via NumPy slicing (`_fill_direct`)
-* [x] Add block counter (`_counter_blocks`)
-
-### Refactoring
-
-* [x] Extract `_validate_bounds` — single method called by `fill_rectangle`, `_fill_direct`, `_fill_split`
-* [x] Remove duplicated validation logic
-* [x] Improve naming consistency (`_counter_blocks` → `_count_blocks`)
-
-### Chunk System
-
-* [x] Add `chunk_size` (constructor param, default 16)
-* [x] Add `loaded_chunks` (set of `(cx, cy)` tuples)
-* [x] Implement `_get_chunk`
-* [x] Implement `force_load` / `unload_chunk`
-* [x] Implement `_check_loaded`
-* [x] Integrate chunk validation into `fill_rectangle`
-
-### Visualization
-
-* [x] Add matplotlib visualization (`show()`)
-* [x] Add custom block colormap (`BLOCK_COLORS` palette)
-* [x] Add chunk overlay debug view (`show(show_chunks=True)`)
-
-### Testing
-
-* [x] Test `set_block` / `get_block`
-* [x] Test direct fill (inclusive area)
-* [x] Test reversed coordinates
-* [x] Test recursive fill for large areas (40×40 = 1600 blocks)
-* [x] Test out-of-bounds raises `ValueError`
-* [x] Test routing to `_fill_direct` for small areas
-* [x] Test routing to `_fill_split` for large areas
-* [x] Test routing to `_fill_split` at exact limit
-* [x] Test all chunks loaded by default
-* [x] Test fill raises when chunk unloaded
-* [x] Test `force_load` re-enables fill
-* [x] Test multi-chunk fill fails if one chunk is unloaded
-* [x] Test `_get_chunk` returns correct coords
-* [x] Test single cell fill
-* [x] Test corner fills (top-left, bottom-right)
-* [x] Test exact boundary raises `ValueError`
-* [x] Test `get_block` returns `None` outside bounds
+* [x] World grid, fill logic, validation
+* [x] Chunk loading and validation
+* [x] Matplotlib viewer with chunk overlay
+* [x] pytest coverage for core behaviors
 
 ---
 
-# Phase 2 — Dimensional Generalization
+# Phase 2 — Clean Architecture (Next)
 
 ## Goals
 
-Generalize the engine to support N-dimensional worlds.
+Make the core extensible and modular without rewriting.
 
 ## Tasks
 
-* [ ] Replace width/height with generic shape
-* [ ] Use tuple-based indexing
-* [ ] Generate dynamic slices
-* [ ] Generalize fill operations
-* [ ] Benchmark performance
+* [ ] Split modules: world, chunks, fill, rules, io
+* [ ] Centralize validation and bounds handling
+* [ ] Define a stable public API surface
+* [ ] Add lightweight serialization (JSON or npy) for world snapshots
 
 ---
 
-# Phase 3 — Dynamic Simulation
+# Phase 3 — Rules and Simulation (Next)
 
 ## Goals
 
-Transform Lattice from static editor into simulation engine.
+Introduce tick-based updates and simple rule systems.
 
 ## Tasks
 
-* [ ] Add tick system
-* [ ] Add gravity blocks
-* [ ] Add fluid propagation
-* [ ] Add cellular automata rules
-* [ ] Add chunk streaming
+* [ ] Add tick loop (`world.tick()`)
+* [ ] Add rule registry and ordering
+* [ ] Implement basic materials (sand, water)
+* [ ] Add deterministic update tests
 
 ---
 
-# Phase 4 — Procedural Generation
+# Phase 4 — Visualization (2D Interactive)
 
 ## Goals
 
-Generate terrain and structures procedurally.
+Real-time interaction and debugging overlays.
 
 ## Tasks
-
-* [ ] Add Perlin noise terrain
-* [ ] Add biome system
-* [ ] Add height maps
-* [ ] Add cave generation
-* [ ] Add structure generation
-
----
-
-# Phase 5 — Visualization & Rendering
-
-## Goals
-
-Interactive visualization and eventually real-time rendering.
-
-## Tasks
-
-### 2D
 
 * [ ] Add Pygame renderer
-* [ ] Add camera controls
-* [ ] Add chunk visualization
+* [ ] Add camera controls (pan/zoom)
+* [ ] Add chunk debug overlay
 
-### 3D
+---
 
-* [ ] Evaluate Ursina
-* [ ] Evaluate Panda3D
-* [ ] Implement voxel rendering
-* [ ] Add real-time chunk streaming
+# Phase 5 — 3D Voxel Core (Future)
+
+## Goals
+
+Extend the engine to 3D grids and chunks.
+
+## Tasks
+
+* [ ] Generalize to N-dim (shape tuples)
+* [ ] 3D chunks and bounds
+* [ ] 3D fill and rule updates
+* [ ] Choose a 3D viewer (Ursina/Panda3D/moderngl)
+
+---
+
+# Phase 6 — Minecraft Java Plugin Integration (Future)
+
+## Goals
+
+Connect Lattice to a Minecraft Java plugin (Paper/Spigot), not a mod.
+
+## Tasks
+
+* [ ] Define bridge protocol (REST or socket)
+* [ ] Implement Python server and Java client
+* [ ] Map Lattice fill to plugin-side chunk edits
+* [ ] Add sync tests with mock worlds
+
+---
+
+# 30-Day Plan (Realistic)
+
+## Week 1
+
+* Refactor into modules (Phase 2 start)
+* Add snapshot serialization
+
+## Week 2
+
+* Stabilize public API
+* Fill/chunk rules tests
+
+## Week 3
+
+* Add basic tick system
+* Implement 1-2 simple rules
+
+## Week 4
+
+* Prototype interactive 2D viewer
+* Decide bridge protocol for Java plugin
 
 ---
 
