@@ -9,6 +9,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "fastapi>=0.136.1",
     "jupyter",
     "matplotlib>=3.10.8",
     "numpy>=2.4.2",
@@ -16,6 +17,7 @@ dependencies = [
     "pytest>=9.0.2",
     "pyvista>=0.47.1",
     "seaborn>=0.13.2",
+    "uvicorn>=0.47.0",
 ]
 
 
