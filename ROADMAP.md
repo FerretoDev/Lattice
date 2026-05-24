@@ -90,3 +90,9 @@ Key tasks:
 
 - Do not start Java plugin work before Phase 2-4 foundations.
 - Do not jump to 3D until the 2D simulation and API are stable.
+
+---
+
+## Documentation
+
+- Evolving architecture: [docs/architecture.md](docs/architecture.md)

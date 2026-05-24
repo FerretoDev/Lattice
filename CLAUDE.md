@@ -121,6 +121,8 @@ Computes inclusive rectangle area.
 
 See [ROADMAP.md](ROADMAP.md) for the dependency-ordered phases and [PLAN.md](PLAN.md) for the current 30-day plan.
 
+Architecture reference: [docs/architecture.md](docs/architecture.md).
+
 ---
 
 # Ecosystem Scope (Target)
