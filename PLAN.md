@@ -4,11 +4,11 @@ This plan follows the dependency order in [ROADMAP.md](ROADMAP.md).
 
 ---
 
-## Week 1
+## Week 1 (Done)
 
-- Refactor into modules (Phase 2 start)
-- Add snapshot serialization
-- Identify public API entry points
+- [x] Refactor into modules (Phase 2 start)
+- [x] Add snapshot serialization
+- [x] Identify public API entry points
 
 ## Week 2
 

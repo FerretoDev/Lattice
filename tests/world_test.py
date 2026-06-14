@@ -188,3 +188,22 @@ def test_get_block_returns_none_outside_bounds() -> None:
     assert world.get_block(0, -1) is None
     assert world.get_block(10, 0) is None
     assert world.get_block(0, 10) is None
+
+
+def test_serialization() -> None:
+    world = World(32, 32)
+    world.set_block(2, 3, 2)
+    world.set_block(5, 5, 4)
+    world.unload_chunk(0, 0)
+
+    json_str = world.to_json()
+    new_world = World.from_json(json_str)
+
+    assert new_world.width == 32
+    assert new_world.height == 32
+    assert new_world.MAX_BLOCKS == world.MAX_BLOCKS
+    assert new_world.get_block(2, 3) == 2
+    assert new_world.get_block(5, 5) == 4
+    assert (0, 0) not in new_world.loaded_chunks
+    assert (0, 1) in new_world.loaded_chunks
+
