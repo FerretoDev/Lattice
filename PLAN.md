@@ -16,11 +16,11 @@ This plan follows the dependency order in [ROADMAP.md](ROADMAP.md).
 - Fill/chunk rules tests
 - Consolidate validation and bounds handling
 
-## Week 3
+## Week 3 (Done)
 
-- Add basic tick system
-- Implement 1-2 simple rules (sand, water)
-- Deterministic update tests
+- [x] Add basic tick system
+- [x] Implement 1-2 simple rules (sand, water)
+- [x] Deterministic update tests
 
 ## Week 4
 
