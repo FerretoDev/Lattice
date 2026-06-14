@@ -12,23 +12,23 @@
 <body>
     <div class="app-container">
         <!-- Sidebar Controls -->
-        <aside class="sidebar">
+        <aside class="sidebar" aria-label="Engine controls">
             <div class="brand">
-                <div class="logo">L</div>
+                <div class="logo" aria-hidden="true">L</div>
                 <h1>Lattice <span>Engine</span></h1>
             </div>
 
             <!-- Block Selector -->
-            <section class="section">
-                <h2>Select Material</h2>
-                <div class="block-selector" id="block-selector">
+            <section class="section" aria-labelledby="heading-selector">
+                <h2 id="heading-selector">Select Material</h2>
+                <div class="block-selector" id="block-selector" role="radiogroup" aria-label="Block materials">
                     <!-- Loaded dynamically from API -->
                 </div>
             </section>
 
             <!-- Simulation Controls -->
-            <section class="section">
-                <h2>Simulation</h2>
+            <section class="section" aria-labelledby="heading-simulation">
+                <h2 id="heading-simulation">Simulation</h2>
                 <div class="control-row">
                     <button id="btn-step" class="btn primary">Step Tick</button>
                     <button id="btn-play" class="btn success">Play</button>
@@ -40,27 +40,45 @@
             </section>
 
             <!-- Draw/Fill Tool -->
-            <section class="section">
-                <h2>Fill Tool</h2>
+            <section class="section" aria-labelledby="heading-fill">
+                <h2 id="heading-fill">Fill Tool</h2>
                 <div class="form-grid">
-                    <input type="number" id="fill-x1" placeholder="x1" class="form-input">
-                    <input type="number" id="fill-y1" placeholder="y1" class="form-input">
-                    <input type="number" id="fill-x2" placeholder="x2" class="form-input">
-                    <input type="number" id="fill-y2" placeholder="y2" class="form-input">
+                    <div class="input-wrapper">
+                        <label for="fill-x1">X1</label>
+                        <input type="number" id="fill-x1" class="form-input" value="0">
+                    </div>
+                    <div class="input-wrapper">
+                        <label for="fill-y1">Y1</label>
+                        <input type="number" id="fill-y1" class="form-input" value="0">
+                    </div>
+                    <div class="input-wrapper">
+                        <label for="fill-x2">X2</label>
+                        <input type="number" id="fill-x2" class="form-input" value="0">
+                    </div>
+                    <div class="input-wrapper">
+                        <label for="fill-y2">Y2</label>
+                        <input type="number" id="fill-y2" class="form-input" value="0">
+                    </div>
                 </div>
                 <button id="btn-fill" class="btn secondary">Execute Fill</button>
             </section>
 
             <!-- Chunk Utilities -->
-            <section class="section">
-                <h2>Chunk Settings</h2>
+            <section class="section" aria-labelledby="heading-chunks">
+                <h2 id="heading-chunks">Chunk Settings</h2>
                 <div class="checkbox-group">
                     <input type="checkbox" id="chk-grid-overlay" checked>
                     <label for="chk-grid-overlay">Show Chunk Borders</label>
                 </div>
                 <div class="form-row">
-                    <input type="number" id="chunk-cx" placeholder="cx" class="form-input">
-                    <input type="number" id="chunk-cy" placeholder="cy" class="form-input">
+                    <div class="input-wrapper">
+                        <label for="chunk-cx">CX</label>
+                        <input type="number" id="chunk-cx" class="form-input" value="0">
+                    </div>
+                    <div class="input-wrapper">
+                        <label for="chunk-cy">CY</label>
+                        <input type="number" id="chunk-cy" class="form-input" value="0">
+                    </div>
                 </div>
                 <div class="control-row">
                     <button id="btn-load-chunk" class="btn accent-btn">Force Load</button>
@@ -69,31 +87,41 @@
             </section>
 
             <!-- Reset World -->
-            <section class="section">
-                <h2>Reset World</h2>
+            <section class="section" aria-labelledby="heading-reset">
+                <h2 id="heading-reset">Reset World</h2>
                 <div class="form-grid">
-                    <input type="number" id="reset-w" placeholder="Width (48)" class="form-input" value="48">
-                    <input type="number" id="reset-h" placeholder="Height (48)" class="form-input" value="48">
-                    <input type="number" id="reset-cs" placeholder="Chunk (16)" class="form-input" value="16">
+                    <div class="input-wrapper">
+                        <label for="reset-w">W</label>
+                        <input type="number" id="reset-w" class="form-input" value="48">
+                    </div>
+                    <div class="input-wrapper">
+                        <label for="reset-h">H</label>
+                        <input type="number" id="reset-h" class="form-input" value="48">
+                    </div>
+                    <div class="input-wrapper">
+                        <label for="reset-cs">Size</label>
+                        <input type="number" id="reset-cs" class="form-input" value="16">
+                    </div>
                 </div>
                 <button id="btn-reset" class="btn danger-btn">Reset</button>
             </section>
 
             <!-- Snapshots -->
-            <section class="section">
-                <h2>Snapshots</h2>
+            <section class="section" aria-labelledby="heading-snapshots">
+                <h2 id="heading-snapshots">Snapshots</h2>
                 <div class="control-row">
                     <button id="btn-export" class="btn">Copy JSON</button>
                     <button id="btn-import" class="btn">Load JSON</button>
                 </div>
+                <label for="txt-snapshot" class="sr-only">Snapshot JSON</label>
                 <textarea id="txt-snapshot" class="form-textarea" placeholder="Paste snapshot JSON here to import..."></textarea>
             </section>
         </aside>
 
         <!-- Main Viewport -->
-        <main class="viewport">
+        <main class="viewport" role="main">
             <header class="top-bar">
-                <div id="coord-info" class="coord-info">
+                <div id="coord-info" class="coord-info" role="status">
                     Hover canvas to inspect cells
                 </div>
                 <div class="controls-hint">
@@ -101,7 +129,7 @@
                 </div>
             </header>
 
-            <div class="canvas-container" id="canvas-container">
+            <div class="canvas-container" id="canvas-container" tabindex="0" aria-label="Interactive world canvas grid">
                 <canvas id="world-canvas"></canvas>
             </div>
 

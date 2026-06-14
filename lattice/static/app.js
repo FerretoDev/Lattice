@@ -98,12 +98,11 @@ function setupBlockSelector() {
         const option = document.createElement('div');
         option.className = `block-option ${blockId === activeBlock ? 'active' : ''}`;
         option.dataset.id = blockId;
+        option.tabIndex = 0;
+        option.setAttribute('role', 'radio');
+        option.setAttribute('aria-checked', blockId === activeBlock ? 'true' : 'false');
 
         const preview = document.createElement('div');
-        preview.className = 'block-color-preview';
-        preview.style.backgroundColor = color;
-
-        const label = document.createElement('div');
         preview.className = 'block-color-preview';
         preview.style.backgroundColor = color;
         
@@ -114,10 +113,22 @@ function setupBlockSelector() {
         option.appendChild(preview);
         option.appendChild(text);
         
-        option.addEventListener('click', () => {
-            document.querySelectorAll('.block-option').forEach(el => el.classList.remove('active'));
+        const selectBlock = () => {
+            document.querySelectorAll('.block-option').forEach(el => {
+                el.classList.remove('active');
+                el.setAttribute('aria-checked', 'false');
+            });
             option.classList.add('active');
+            option.setAttribute('aria-checked', 'true');
             activeBlock = blockId;
+        };
+
+        option.addEventListener('click', selectBlock);
+        option.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                selectBlock();
+            }
         });
 
         blockSelector.appendChild(option);
