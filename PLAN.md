@@ -27,3 +27,10 @@ This plan follows the dependency order in [ROADMAP.md](ROADMAP.md).
 - [x] Prototype interactive 2D viewer (FastAPI + HTML5 Canvas)
 - [x] Add camera controls and chunk overlays
 - [x] Decide bridge protocol for Java plugin
+
+
+## Phase 5 (3D Voxel Core) (Done)
+
+- [x] Generalize to 3D grid and chunk system
+- [x] Add 3D box fill logic
+- [x] Adapt rules (sand, water) to 3D

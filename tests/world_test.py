@@ -287,3 +287,41 @@ def test_rule_registry_ordering() -> None:
     assert called_order == [1, 2]
 
 
+def test_3d_block_access() -> None:
+    world = World(10, 10, depth=5)
+    
+    # Set a 3D block
+    world.set_block(2, 3, 4, 1) # x=2, y=3, z=4, block=1
+    
+    assert world.get_block(2, 3, 4) == 1
+    assert world.get_block(2, 3, 0) == 0
+
+
+def test_3d_box_fill() -> None:
+    world = World(10, 10, depth=5)
+    
+    # Fill a small 3x3x3 box
+    world.fill_box(1, 1, 1, 3, 3, 3, 2)
+    
+    for z in range(1, 4):
+        for y in range(1, 4):
+            for x in range(1, 4):
+                assert world.get_block(x, y, z) == 2
+                
+    assert world.get_block(0, 0, 0) == 0
+    assert world.get_block(4, 4, 4) == 0
+
+
+def test_3d_box_fill_split() -> None:
+    world = World(10, 10, depth=20) # 10x10x20 = 2000 cells
+    
+    # Fill a large box that will trigger splitting (2000 >= 1000 MAX_BLOCKS)
+    world.fill_box(0, 0, 0, 9, 9, 19, 3)
+    
+    for z in range(20):
+        for y in range(10):
+            for x in range(10):
+                assert world.get_block(x, y, z) == 3
+
+
+
