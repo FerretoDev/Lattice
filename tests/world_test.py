@@ -207,3 +207,83 @@ def test_serialization() -> None:
     assert (0, 0) not in new_world.loaded_chunks
     assert (0, 1) in new_world.loaded_chunks
 
+
+def test_sand_gravity() -> None:
+    from lattice.blocks import AIR, SAND
+    from lattice.rules import SandGravityRule
+
+    world = World(10, 10)
+    world.rule_registry.register(SandGravityRule())
+
+    # Set sand with air below
+    world.set_block(2, 3, SAND)
+    assert world.get_block(2, 3) == SAND
+    assert world.get_block(2, 2) == AIR
+
+    world.tick()
+
+    assert world.get_block(2, 3) == AIR
+    assert world.get_block(2, 2) == SAND
+
+
+def test_water_flow_down() -> None:
+    from lattice.blocks import AIR, WATER
+    from lattice.rules import WaterFlowRule
+
+    world = World(10, 10)
+    world.rule_registry.register(WaterFlowRule())
+
+    # Set water with air below
+    world.set_block(2, 3, WATER)
+    assert world.get_block(2, 3) == WATER
+    assert world.get_block(2, 2) == AIR
+
+    world.tick()
+
+    assert world.get_block(2, 3) == AIR
+    assert world.get_block(2, 2) == WATER
+
+
+def test_water_flow_horizontal() -> None:
+    from lattice.blocks import AIR, STONE, WATER
+    from lattice.rules import WaterFlowRule
+
+    world = World(10, 10)
+    world.rule_registry.register(WaterFlowRule())
+
+    # Place water resting on stone
+    world.set_block(2, 1, STONE)
+    world.set_block(2, 2, WATER)
+
+    assert world.get_block(2, 2) == WATER
+    assert world.get_block(1, 2) == AIR
+    assert world.get_block(3, 2) == AIR
+
+    world.tick()
+
+    # Should flow left deterministically
+    assert world.get_block(2, 2) == AIR
+    assert world.get_block(1, 2) == WATER
+    assert world.get_block(3, 2) == AIR
+
+
+def test_rule_registry_ordering() -> None:
+    called_order = []
+
+    class DummyRule1:
+        def apply(self, world) -> None:
+            called_order.append(1)
+
+    class DummyRule2:
+        def apply(self, world) -> None:
+            called_order.append(2)
+
+    world = World(10, 10)
+    world.rule_registry.register(DummyRule2(), priority=200)
+    world.rule_registry.register(DummyRule1(), priority=100)
+
+    world.tick()
+
+    assert called_order == [1, 2]
+
+

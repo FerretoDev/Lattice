@@ -97,6 +97,11 @@ class World:
             return self.grid[y, x]
         return None
 
+    def tick(self) -> None:
+        """Advance the world simulation by one tick."""
+        for rule in self.rule_registry.ordered_rules:
+            rule.apply(self)
+
     def fill_rectangle(self, x1: int, y1: int, x2: int, y2: int, block: int) -> None:
         """Fill an inclusive rectangle, routing to split or direct based on size."""
         x_start, x_end = min(x1, x2), max(x1, x2)

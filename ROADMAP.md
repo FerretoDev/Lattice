@@ -41,18 +41,18 @@ Key tasks:
 - [x] Define a stable public API surface
 - [x] Add lightweight serialization (JSON or npy) for world snapshots
 
-### Phase 3 — Rules and Simulation (Next)
+### Phase 3 — Rules and Simulation (Done)
 
 Goals:
 - Introduce tick-based updates and simple rule systems
 
 Key tasks:
-- Add tick loop (`world.tick()`)
-- Add rule registry and ordering
-- Implement basic materials (sand, water)
-- Add deterministic update tests
+- [x] Add tick loop (`world.tick()`)
+- [x] Add rule registry and ordering
+- [x] Implement basic materials (sand, water)
+- [x] Add deterministic update tests
 
-### Phase 4 — Visualization (2D Interactive)
+### Phase 4 — Visualization (2D Interactive) (Next)
 
 Goals:
 - Real-time interaction and debugging overlays
