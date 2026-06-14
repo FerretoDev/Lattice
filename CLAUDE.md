@@ -245,7 +245,7 @@ Real-time interaction and debugging overlays.
 
 ---
 
-# Phase 5 — 3D Voxel Core (Next)
+# Phase 5 — 3D Voxel Core (Done)
 
 ## Goals
 
@@ -253,10 +253,10 @@ Extend the engine to 3D grids and chunks.
 
 ## Tasks
 
-* [ ] Generalize to N-dim (shape tuples)
-* [ ] 3D chunks and bounds
-* [ ] 3D fill and rule updates
-* [ ] Choose a 3D viewer (Ursina/Panda3D/moderngl)
+* [x] Generalize to N-dim (shape tuples)
+* [x] 3D chunks and bounds
+* [x] 3D fill and rule updates
+* [x] Choose a 3D viewer (Ursina/Panda3D/moderngl) (Implemented PyVista voxel grid)
 
 ---
 

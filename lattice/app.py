@@ -1,11 +1,12 @@
+import os
+
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-import os
 
-from lattice.world import World
-from lattice.blocks import AIR, STONE, GRASS, DIRT, SAND, WATER, BLOCK_COLORS
+from lattice.blocks import BLOCK_COLORS
 from lattice.rules import SandGravityRule, WaterFlowRule
+from lattice.world import World
 
 app = FastAPI(title="Lattice Interactive Viewer")
 
@@ -15,11 +16,13 @@ world = World(48, 48, chunk_size=16)
 world.rule_registry.register(SandGravityRule(), priority=100)
 world.rule_registry.register(WaterFlowRule(), priority=200)
 
+
 # Request models
 class BlockRequest(BaseModel):
     x: int
     y: int
     block: int
+
 
 class FillRequest(BaseModel):
     x1: int
@@ -28,17 +31,21 @@ class FillRequest(BaseModel):
     y2: int
     block: int
 
+
 class ChunkRequest(BaseModel):
     cx: int
     cy: int
 
+
 class SnapshotRequest(BaseModel):
     data: str
+
 
 class ResetRequest(BaseModel):
     width: int
     height: int
     chunk_size: int
+
 
 # API Endpoints
 @app.get("/api/world")
@@ -50,18 +57,21 @@ def get_world():
         "MAX_BLOCKS": world.MAX_BLOCKS,
         "grid": world.grid.tolist(),
         "loaded_chunks": list(world.loaded_chunks),
-        "block_colors": BLOCK_COLORS
+        "block_colors": BLOCK_COLORS,
     }
+
 
 @app.post("/api/tick")
 def tick_world():
     world.tick()
     return get_world()
 
+
 @app.post("/api/block")
 def set_block(req: BlockRequest):
     world.set_block(req.x, req.y, req.block)
     return {"status": "ok", "block": world.get_block(req.x, req.y)}
+
 
 @app.post("/api/fill")
 def fill_rect(req: FillRequest):
@@ -71,19 +81,23 @@ def fill_rect(req: FillRequest):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
 @app.post("/api/chunk/load")
 def load_chunk(req: ChunkRequest):
     world.force_load(req.cx, req.cy)
     return {"status": "ok", "loaded_chunks": list(world.loaded_chunks)}
+
 
 @app.post("/api/chunk/unload")
 def unload_chunk(req: ChunkRequest):
     world.unload_chunk(req.cx, req.cy)
     return {"status": "ok", "loaded_chunks": list(world.loaded_chunks)}
 
+
 @app.post("/api/snapshot/save")
 def save_snapshot():
     return {"snapshot": world.to_json()}
+
 
 @app.post("/api/snapshot/load")
 def load_snapshot(req: SnapshotRequest):
@@ -95,7 +109,10 @@ def load_snapshot(req: SnapshotRequest):
         world.rule_registry.register(WaterFlowRule(), priority=200)
         return get_world()
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to load snapshot: {str(e)}")
+        raise HTTPException(
+            status_code=400, detail=f"Failed to load snapshot: {str(e)}"
+        )
+
 
 @app.post("/api/reset")
 def reset_world(req: ResetRequest):
@@ -106,6 +123,7 @@ def reset_world(req: ResetRequest):
     world.rule_registry.register(SandGravityRule(), priority=100)
     world.rule_registry.register(WaterFlowRule(), priority=200)
     return get_world()
+
 
 # Serve static frontend files
 static_dir = os.path.join(os.path.dirname(__file__), "static")
