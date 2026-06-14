@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lattice Simulation Engine</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Controls -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo">L</div>
+                <h1>Lattice <span>Engine</span></h1>
+            </div>
+
+            <!-- Block Selector -->
+            <section class="section">
+                <h2>Select Material</h2>
+                <div class="block-selector" id="block-selector">
+                    <!-- Loaded dynamically from API -->
+                </div>
+            </section>
+
+            <!-- Simulation Controls -->
+            <section class="section">
+                <h2>Simulation</h2>
+                <div class="control-row">
+                    <button id="btn-step" class="btn primary">Step Tick</button>
+                    <button id="btn-play" class="btn success">Play</button>
+                </div>
+                <div class="control-group">
+                    <label for="speed-slider">Tick Interval: <span id="speed-val">100</span>ms</label>
+                    <input type="range" id="speed-slider" min="50" max="1000" step="50" value="100">
+                </div>
+            </section>
+
+            <!-- Draw/Fill Tool -->
+            <section class="section">
+                <h2>Fill Tool</h2>
+                <div class="form-grid">
+                    <input type="number" id="fill-x1" placeholder="x1" class="form-input">
+                    <input type="number" id="fill-y1" placeholder="y1" class="form-input">
+                    <input type="number" id="fill-x2" placeholder="x2" class="form-input">
+                    <input type="number" id="fill-y2" placeholder="y2" class="form-input">
+                </div>
+                <button id="btn-fill" class="btn secondary">Execute Fill</button>
+            </section>
+
+            <!-- Chunk Utilities -->
+            <section class="section">
+                <h2>Chunk Settings</h2>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="chk-grid-overlay" checked>
+                    <label for="chk-grid-overlay">Show Chunk Borders</label>
+                </div>
+                <div class="form-row">
+                    <input type="number" id="chunk-cx" placeholder="cx" class="form-input">
+                    <input type="number" id="chunk-cy" placeholder="cy" class="form-input">
+                </div>
+                <div class="control-row">
+                    <button id="btn-load-chunk" class="btn accent-btn">Force Load</button>
+                    <button id="btn-unload-chunk" class="btn warning-btn">Unload</button>
+                </div>
+            </section>
+
+            <!-- Reset World -->
+            <section class="section">
+                <h2>Reset World</h2>
+                <div class="form-grid">
+                    <input type="number" id="reset-w" placeholder="Width (48)" class="form-input" value="48">
+                    <input type="number" id="reset-h" placeholder="Height (48)" class="form-input" value="48">
+                    <input type="number" id="reset-cs" placeholder="Chunk (16)" class="form-input" value="16">
+                </div>
+                <button id="btn-reset" class="btn danger-btn">Reset</button>
+            </section>
+
+            <!-- Snapshots -->
+            <section class="section">
+                <h2>Snapshots</h2>
+                <div class="control-row">
+                    <button id="btn-export" class="btn">Copy JSON</button>
+                    <button id="btn-import" class="btn">Load JSON</button>
+                </div>
+                <textarea id="txt-snapshot" class="form-textarea" placeholder="Paste snapshot JSON here to import..."></textarea>
+            </section>
+        </aside>
+
+        <!-- Main Viewport -->
+        <main class="viewport">
+            <header class="top-bar">
+                <div id="coord-info" class="coord-info">
+                    Hover canvas to inspect cells
+                </div>
+                <div class="controls-hint">
+                    Drag: Pan | Scroll: Zoom | Click: Draw | Shift+Click: Load/Unload Chunk
+                </div>
+            </header>
+
+            <div class="canvas-container" id="canvas-container">
+                <canvas id="world-canvas"></canvas>
+            </div>
+
+            <footer class="status-bar">
+                <div class="status-item">Grid: <span id="status-size">0x0</span></div>
+                <div class="status-item">Chunks: <span id="status-chunks">0</span></div>
+                <div class="status-item">Loaded Chunks: <span id="status-loaded-chunks">0</span></div>
+            </footer>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -52,17 +52,17 @@ Key tasks:
 - [x] Implement basic materials (sand, water)
 - [x] Add deterministic update tests
 
-### Phase 4 — Visualization (2D Interactive) (Next)
+### Phase 4 — Visualization (2D Interactive) (Done)
 
 Goals:
 - Real-time interaction and debugging overlays
 
 Key tasks:
-- Add Pygame renderer
-- Add camera controls (pan/zoom)
-- Add chunk debug overlay
+- [x] Add interactive web frontend (replaced Pygame)
+- [x] Add camera controls (pan/zoom)
+- [x] Add chunk debug overlay
 
-### Phase 5 — 3D Voxel Core (Future)
+### Phase 5 — 3D Voxel Core (Next)
 
 Goals:
 - Extend the engine to 3D grids and chunks

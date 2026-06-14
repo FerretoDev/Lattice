@@ -231,7 +231,7 @@ Introduce tick-based updates and simple rule systems.
 
 ---
 
-# Phase 4 — Visualization (2D Interactive) (Next)
+# Phase 4 — Visualization (2D Interactive) (Done)
 
 ## Goals
 
@@ -239,13 +239,13 @@ Real-time interaction and debugging overlays.
 
 ## Tasks
 
-* [ ] Add Pygame renderer
-* [ ] Add camera controls (pan/zoom)
-* [ ] Add chunk debug overlay
+* [x] Add interactive web frontend (replaced Pygame)
+* [x] Add camera controls (pan/zoom)
+* [x] Add chunk debug overlay
 
 ---
 
-# Phase 5 — 3D Voxel Core (Future)
+# Phase 5 — 3D Voxel Core (Next)
 
 ## Goals
 
