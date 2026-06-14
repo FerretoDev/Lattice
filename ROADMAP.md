@@ -30,16 +30,16 @@ Phase 1 is complete for the 2D core. Chunks, constrained fills, and tests are in
 - Matplotlib viewer with chunk overlay
 - pytest coverage for core behaviors
 
-### Phase 2 — Clean Architecture (Next)
+### Phase 2 — Clean Architecture (Done)
 
 Goals:
 - Make the core extensible and modular without rewriting
 
 Key tasks:
-- Split modules: world, chunks, fill, rules, io
-- Centralize validation and bounds handling
-- Define a stable public API surface
-- Add lightweight serialization (JSON or npy) for world snapshots
+- [x] Split modules: world, chunks, fill, rules, io
+- [x] Centralize validation and bounds handling
+- [x] Define a stable public API surface
+- [x] Add lightweight serialization (JSON or npy) for world snapshots
 
 ### Phase 3 — Rules and Simulation (Next)
 

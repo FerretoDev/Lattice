@@ -1,15 +1,13 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+import numpy as np
 
-BLOCK_COLORS: dict[int, str] = {
-    0: "#87CEEB",  # air
-    1: "#808080",  # stone
-    2: "#228B22",  # grass
-    3: "#8B4513",  # dirt
-    4: "#FFD700",  # sand
-}
+from lattice.blocks import BLOCK_COLORS
+from lattice.chunks import ChunkManager
+from lattice.fill import count_blocks, fill_direct, validate_bounds
+from lattice.io import deserialize_world, serialize_world
+from lattice.rules import RuleRegistry
 
 
 class World:
@@ -21,60 +19,48 @@ class World:
         self.chunk_size = chunk_size
         self.grid = np.zeros((height, width), dtype=int)
         self.MAX_BLOCKS = 1000
-        self.loaded_chunks: set[tuple[int, int]] = set()
-        self._load_all_chunks()
+        self.chunk_manager = ChunkManager(width, height, chunk_size)
+        self.rule_registry = RuleRegistry()
 
     # ------------------------------------------------------------------
-    # Chunk system
+    # Chunk system delegates (for backwards compatibility)
     # ------------------------------------------------------------------
+
+    @property
+    def loaded_chunks(self) -> set[tuple[int, int]]:
+        return self.chunk_manager.loaded_chunks
 
     def _chunks_in_axis(self, size: int) -> int:
-        return (size + self.chunk_size - 1) // self.chunk_size
-
-    def _load_all_chunks(self) -> None:
-        for cy in range(self._chunks_in_axis(self.height)):
-            for cx in range(self._chunks_in_axis(self.width)):
-                self.loaded_chunks.add((cx, cy))
+        return self.chunk_manager._chunks_in_axis(size)
 
     def _get_chunk(self, x: int, y: int) -> tuple[int, int]:
-        return (x // self.chunk_size, y // self.chunk_size)
+        return self.chunk_manager._get_chunk(x, y)
 
     def force_load(self, cx: int, cy: int) -> None:
-        self.loaded_chunks.add((cx, cy))
+        self.chunk_manager.force_load(cx, cy)
 
     def unload_chunk(self, cx: int, cy: int) -> None:
-        self.loaded_chunks.discard((cx, cy))
+        self.chunk_manager.unload_chunk(cx, cy)
 
     def _check_loaded(self, x1: int, y1: int, x2: int, y2: int) -> None:
-        cx1, cy1 = self._get_chunk(x1, y1)
-        cx2, cy2 = self._get_chunk(x2, y2)
-        for cy in range(cy1, cy2 + 1):
-            for cx in range(cx1, cx2 + 1):
-                if (cx, cy) not in self.loaded_chunks:
-                    raise ValueError(f"Chunk ({cx}, {cy}) is not loaded")
+        self.chunk_manager.check_loaded(x1, y1, x2, y2)
 
     # ------------------------------------------------------------------
-    # Validation helpers
+    # Validation helpers delegates
     # ------------------------------------------------------------------
 
     def _validate_bounds(self, x1: int, y1: int, x2: int, y2: int) -> None:
-        """Raise if normalized (x1 <= x2, y1 <= y2) coords exceed the grid."""
-        if x1 < 0 or y1 < 0 or x2 >= self.width or y2 >= self.height:
-            raise ValueError("Rectangle exceeds world boundaries")
+        validate_bounds(x1, y1, x2, y2, self.width, self.height)
 
     def _count_blocks(self, x1: int, y1: int, x2: int, y2: int) -> int:
-        """Return inclusive area for a normalized rectangle."""
-        return (abs(x2 - x1) + 1) * (abs(y2 - y1) + 1)
+        return count_blocks(x1, y1, x2, y2)
 
     # ------------------------------------------------------------------
     # Fill internals
     # ------------------------------------------------------------------
 
     def _fill_direct(self, x1: int, y1: int, x2: int, y2: int, block: int) -> None:
-        x_start, x_end = min(x1, x2), max(x1, x2)
-        y_start, y_end = min(y1, y2), max(y1, y2)
-        self._validate_bounds(x_start, y_start, x_end, y_end)
-        self.grid[y_start : y_end + 1, x_start : x_end + 1] = int(block)
+        fill_direct(self.grid, x1, y1, x2, y2, block, self.width, self.height)
 
     def _fill_split(self, x1: int, y1: int, x2: int, y2: int, block: int) -> None:
         """Recursively split along the longest axis until each piece fits MAX_BLOCKS."""
@@ -124,6 +110,19 @@ class World:
             self._fill_direct(x_start, y_start, x_end, y_end, block)
 
     # ------------------------------------------------------------------
+    # Serialization (Phase 2 Snapshot)
+    # ------------------------------------------------------------------
+
+    def to_json(self) -> str:
+        """Serialize the current world snapshot to JSON."""
+        return serialize_world(self)
+
+    @classmethod
+    def from_json(cls, data_str: str) -> "World":
+        """Deserialize a world snapshot from JSON and return a new instance."""
+        return deserialize_world(data_str, cls)
+
+    # ------------------------------------------------------------------
     # Visualization
     # ------------------------------------------------------------------
 
@@ -133,7 +132,9 @@ class World:
         palette = [BLOCK_COLORS.get(i, "#FF00FF") for i in range(max_id + 1)]
         cmap = mcolors.ListedColormap(palette)
 
-        fig, ax = plt.subplots(figsize=(max(6, self.width // 8), max(6, self.height // 8)))
+        fig, ax = plt.subplots(
+            figsize=(max(6, self.width // 8), max(6, self.height // 8))
+        )
         ax.imshow(
             self.grid,
             cmap=cmap,
