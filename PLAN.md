@@ -22,8 +22,8 @@ This plan follows the dependency order in [ROADMAP.md](ROADMAP.md).
 - [x] Implement 1-2 simple rules (sand, water)
 - [x] Deterministic update tests
 
-## Week 4
+## Week 4 (Done)
 
-- Prototype interactive 2D viewer
-- Add camera controls and chunk overlays
-- Decide bridge protocol for Java plugin
+- [x] Prototype interactive 2D viewer (FastAPI + HTML5 Canvas)
+- [x] Add camera controls and chunk overlays
+- [x] Decide bridge protocol for Java plugin
