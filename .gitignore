@@ -224,3 +224,22 @@ out/
 
 # VS Code
 .vscode/
+
+# AI assistant / agent configuration (local only)
+.gemini/
+.agents/
+.agent/
+.claude/
+.cursor/
+.windsurf/
+.codex/
+.continue/
+.roo/
+.clinerules
+.aider*
+.cursorrules
+.windsurfrules
+CLAUDE.md
+AGENTS.md
+GEMINI.md
+.github/copilot-instructions.md
